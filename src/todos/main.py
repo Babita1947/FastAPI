@@ -6,11 +6,11 @@ app = FastAPI()
 students = [
     {
         "userName": "Nilam",
-        "rollno": 1234
+        "rollNo": 1234
     },
     {
         "userName": "Babita",
-        "rollno": 4567
+        "rollNo": 4567
     }
 ]
 
@@ -18,11 +18,33 @@ students = [
 def getStudents():
     return students
 
-@app.get("/addStudent")
+@app.post("/addStudent")
 def addStudent(userName: str, rollNo: str):
     global students
     students.append({"userName": userName, "rollNo": rollNo})
     return students
+
+# query parameter 
+@app.put("/updateStudent")
+def updateStudent(rollNo: int, updateName: str):
+    print(rollNo, updateName)
+    for student in students:
+        if student["rollNo"] == rollNo:
+            print("updating")
+            student["userName"] = updateName
+            return {"message": "Student updated", "student": student}
+    return {"error": "Student not found"}
+
+
+@app.delete("/deletestudent")
+def deleteStudent(userName: str, rollNo: int):
+    global students
+    for student in students:
+        if student["rollNo"] == rollNo and student["userName"] == userName:
+            students.remove(student)
+            return {"message": "Student deleted", "student": student}
+    return {"error": "Student not found"}
+
 
 @app.get("/")
 def helloWorld():
